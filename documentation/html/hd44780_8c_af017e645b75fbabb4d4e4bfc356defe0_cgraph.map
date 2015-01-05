@@ -1,9 +1,0 @@
-<map id="LCD_CustomChar" name="LCD_CustomChar">
-<area shape="rect" id="node2" href="$hd44780_8c.html#a8e16a58440f75d2009bc3a317686d5ed" title="LCD_WriteCMD" alt="" coords="186,81,305,107"/>
-<area shape="rect" id="node8" href="$hd44780_8c.html#ae78ac65676190a7c2c5fe22e89bc5faa" title="LCD_WriteDATA" alt="" coords="184,30,307,57"/>
-<area shape="rect" id="node3" href="$hd44780_8c.html#a088b423fada88f084d8bbc08c5d3595a" title="LCD_StateWriteBit" alt="" coords="742,30,877,57"/>
-<area shape="rect" id="node5" href="$hd44780_8c.html#ac2e1622efaa9c53c6c09985b6329933f" title="LCD_WriteToDataBus" alt="" coords="357,81,510,107"/>
-<area shape="rect" id="node6" href="$hd44780_8c.html#af955829ddd4c948c616120494e1635da" title="LCD_WaitForBusyFlag" alt="" coords="355,30,512,57"/>
-<area shape="rect" id="node4" href="$hd44780_8c.html#aac45a5f31fff14cf969b12d75c793112" title="LCD_I2C_WriteOut" alt="" coords="925,55,1061,82"/>
-<area shape="rect" id="node7" href="$hd44780_8c.html#aa8e2f69585a8549210ece71790f5807b" title="LCD_GetBusyFlag" alt="" coords="561,30,693,57"/>
-</map>

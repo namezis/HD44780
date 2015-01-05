@@ -1,4 +1,0 @@
-<map id="LCD_StateLEDControl" name="LCD_StateLEDControl">
-<area shape="rect" id="node2" href="$hd44780_8c.html#a088b423fada88f084d8bbc08c5d3595a" title="LCD_StateWriteBit" alt="" coords="209,5,343,32"/>
-<area shape="rect" id="node3" href="$hd44780_8c.html#aac45a5f31fff14cf969b12d75c793112" title="LCD_I2C_WriteOut" alt="" coords="392,5,528,32"/>
-</map>

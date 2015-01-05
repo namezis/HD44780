@@ -23,20 +23,24 @@
  * set the I2C clock speed (in Hertz) (lcd.pcf8574.i2c.Init.ClockSpeed),
  * set the number of lines (has to be type of LCD_NUMBER_OF_LINES) (lcd.NUMBER_OF_LINES),
  * set the interface type (has to be type of LCD_TYPE) (lcd.type).
+ *
+ * Example:
+ * example.c
+ * example_msp.c
  */
 
 /** LCD Interface possibilities
  */
 typedef enum{
-	PCF8574,	/**< Use PCF8574 I2C IO expander as the interface */
-	GPIO		/**< Use GPIO pins directly */
+	PCF8574,	/*!< Use PCF8574 I2C IO expander as the interface */
+	GPIO		/*!< Use GPIO pins directly */
 } LCD_INTERFACE;
 
 /** Possible return values for the functions
  */
 typedef enum{
-	LCD_OK,		/**< Everything went OK */
-	LCD_ERROR	/**< An error occured */
+	LCD_OK,		/*!< Everything went OK */
+	LCD_ERROR	/*!< An error occured */
 } LCD_RESULT;
 
 /** Type of hardware to use
@@ -230,7 +234,10 @@ LCD_RESULT LCD_ShiftDisplay(LCD_PCF8574_HandleTypeDef* handle, uint8_t direction
  * @param	n - a number you want to write to the LCD
  * @return	whether the function was successful or not
  */
-LCD_RESULT LCD_WriteNumber(LCD_PCF8574_HandleTypeDef* handle, int n);
+LCD_RESULT LCD_WriteNumber(LCD_PCF8574_HandleTypeDef* handle, unsigned long n, uint8_t base);
+
+
+LCD_RESULT LCD_WriteFloat(LCD_PCF8574_HandleTypeDef* handle, double number, uint8_t digits);
 
 /**
  * Sets the mode by which data is written to the LCD

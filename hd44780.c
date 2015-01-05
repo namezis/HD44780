@@ -308,29 +308,58 @@ LCD_RESULT LCD_ShiftDisplay(LCD_PCF8574_HandleTypeDef* handle,
 	return LCD_OK;
 }
 
-LCD_RESULT LCD_WriteNumber(LCD_PCF8574_HandleTypeDef* handle, int n) {
+LCD_RESULT LCD_WriteNumber(LCD_PCF8574_HandleTypeDef* handle, unsigned long n,
+		uint8_t base) {
 
-	if (n < 0) {
-		LCD_WriteString(handle, "-");
-		n = -n;
+	char buf[8 * sizeof(long) + 1]; // Assumes 8-bit chars plus zero byte.
+	char *str = &buf[sizeof(buf) - 1];
+
+	*str = '\0';
+
+	// prevent crash if called with base == 1
+	if (base < 2)
+		base = 10;
+
+	do {
+		unsigned long m = n;
+		n /= base;
+		char c = m - base * n;
+		*--str = c < 10 ? c + '0' : c + 'A' - 10;
+	} while (n);
+	return LCD_WriteString(handle, str);
+}
+
+LCD_RESULT LCD_WriteFloat(LCD_PCF8574_HandleTypeDef* handle, double number,
+		uint8_t digits) {
+	// Handle negative numbers
+	if (number < 0.0) {
+		LCD_WriteString(handle,(char*)'-');
+		number = -number;
 	}
 
-	char pcBuf[16], *p;
+	// Round correctly so that print(1.999, 2) prints as "2.00"
+	double rounding = 0.5;
+	for (uint8_t i = 0; i < digits; ++i)
+		rounding /= 10.0;
 
-	if (n == 0) {
-		LCD_WaitForBusyFlag(handle);
-		LCD_WriteDATA(handle, '0');
-	} else {
-		p = pcBuf;
-		while (n != 0) {
-			*p++ = (n % 10) + '0';
-			n /= 10;
-		}
+	number += rounding;
 
-		while (p > pcBuf) {
-			LCD_WaitForBusyFlag(handle);
-			LCD_WriteDATA(handle, *--p);
-		}
+	// Extract the integer part of the number and print it
+	unsigned long int_part = (unsigned long) number;
+	double remainder = number - (double) int_part;
+	LCD_WriteNumber(handle,int_part,10);
+
+	// Print the decimal point, but only if there are digits beyond
+	if (digits > 0) {
+		LCD_WriteString(handle,".");
+	}
+
+	// Extract digits from the remainder one at a time
+	while (digits-- > 0) {
+		remainder *= 10.0;
+		int toPrint = (int)(remainder);
+		LCD_WriteNumber(handle,toPrint,10);
+		remainder -= toPrint;
 	}
 	return LCD_OK;
 }
