@@ -74,6 +74,7 @@ typedef struct{
 	uint32_t*				pins;				/**< Array of pins based on your hardware (wiring) */
 	LCD_TYPE				type;				/**< Type of hardware you want to use */
 	PCF8574_HandleTypeDef 	pcf8574;			/**< PCF8574_HandleTypeDef for communication with PCF8574 */
+	void					(*errorCallback)(LCD_RESULT);
 } LCD_PCF8574_HandleTypeDef;
 
 /** @def INTERFACE - Selector for the type of interface you want to use (has to be a type of LCD_INTERFACE) */

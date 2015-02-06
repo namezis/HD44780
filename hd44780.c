@@ -12,13 +12,15 @@ uint32_t PCF8574_Type0Pins[8] = { 4, 5, 6, 7, 0, 1, 2, 3 };
 void LCD_WaitForBusyFlag(LCD_PCF8574_HandleTypeDef* handle) {
 	uint8_t flag;
 	LCD_GetBusyFlag(handle, &flag);
-	while (flag == 1) {
+	uint32_t startTick=HAL_GetTick();
+	while (flag == 1 && HAL_GetTick()-startTick<handle->pcf8574.PCF_I2C_TIMEOUT) {
 		LCD_GetBusyFlag(handle, &flag);
 	}
 }
 
 LCD_RESULT LCD_I2C_WriteOut(LCD_PCF8574_HandleTypeDef* handle) {
 	if (PCF8574_Write(&handle->pcf8574, handle->state) != PCF8574_OK) {
+		handle->errorCallback(LCD_ERROR);
 		return LCD_ERROR;
 	}
 	return LCD_OK;
@@ -46,9 +48,11 @@ LCD_RESULT LCD_Init(LCD_PCF8574_HandleTypeDef* handle) {
 	if (handle->type == TYPE0) {
 		handle->pins = PCF8574_Type0Pins;
 	} else {
+		handle->errorCallback(LCD_ERROR);
 		return LCD_ERROR;	// no type of subinterface was specified
 	}
 	if (PCF8574_Init(&handle->pcf8574) != PCF8574_OK) {
+		handle->errorCallback(LCD_ERROR);
 		return LCD_ERROR;
 	}
 
@@ -284,6 +288,7 @@ LCD_RESULT LCD_ShiftCursor(LCD_PCF8574_HandleTypeDef* handle, uint8_t direction,
 	int i = 0;
 	for (i = 0; i < steps; i++) {
 		if (LCD_WriteCMD(handle, cmd) != LCD_OK) {
+			handle->errorCallback(LCD_ERROR);
 			return LCD_ERROR;
 		}
 	}
@@ -302,6 +307,7 @@ LCD_RESULT LCD_ShiftDisplay(LCD_PCF8574_HandleTypeDef* handle,
 	int i = 0;
 	for (i = 0; i < steps; i++) {
 		if (LCD_WriteCMD(handle, cmd) != LCD_OK) {
+			handle->errorCallback(LCD_ERROR);
 			return LCD_ERROR;
 		}
 	}
@@ -333,7 +339,7 @@ LCD_RESULT LCD_WriteFloat(LCD_PCF8574_HandleTypeDef* handle, double number,
 		uint8_t digits) {
 	// Handle negative numbers
 	if (number < 0.0) {
-		LCD_WriteString(handle,(char*)'-');
+		LCD_WriteString(handle,"-");
 		number = -number;
 	}
 
